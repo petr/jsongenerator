@@ -32,8 +32,11 @@ class Parser(object):
         '''
             Detect entity type and parse in valid way
         '''
-        if 'type' not in entity:
-            raise Exception('Cannot find type key in %s' % entity)
+
+        if 'enum' in entity:
+            return self.parse_enum(entity)
+
+        assert 'type' in entity, 'Cannot find type key in %s' % entity
 
         python_entity_type = type(entity['type'])
         if python_entity_type is str or python_entity_type is unicode:
@@ -75,6 +78,14 @@ class Parser(object):
     @staticmethod
     def parse_number(entity, description=None):
         return ('nubmer', (),)
+
+    @staticmethod
+    def parse_boolean(entity, description=None):
+        return ('boolean', (),)
+
+    @staticmethod
+    def parse_enum(entity, description=None):
+        return ('enum', (entity['enum'],))
 
     def parse_array(self, entity, description=None):
         assert 'items' in entity, 'There is should and items in array type entity.'
@@ -131,5 +142,13 @@ class Generator(object):
         return fake.name()
 
     @staticmethod
+    def generate_boolean(fake, *args):
+        return fake.random_element([True, False])
+
+    @staticmethod
     def generate_null(fake, *args):
         return None
+
+    @staticmethod
+    def generate_enum(fake, values, *args):
+        return fake.random_element(values)

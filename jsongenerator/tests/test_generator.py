@@ -24,6 +24,12 @@ FAKE_SCHEMA = '''{
         "number": {
             "type": "integer"
         },
+        "flag": {
+            "type": "boolean"
+        },
+        "status": {
+            "enum": ["active", "frozen"]
+        },
         "items": {
             "type": "array",
             "items": [
